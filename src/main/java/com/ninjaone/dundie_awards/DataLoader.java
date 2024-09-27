@@ -1,12 +1,15 @@
 package com.ninjaone.dundie_awards;
 
+import com.ninjaone.dundie_awards.model.Activity;
 import com.ninjaone.dundie_awards.model.Employee;
 import com.ninjaone.dundie_awards.model.Organization;
+import com.ninjaone.dundie_awards.repository.ActivityRepository;
 import com.ninjaone.dundie_awards.repository.EmployeeRepository;
 import com.ninjaone.dundie_awards.repository.OrganizationRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Component
@@ -15,11 +18,15 @@ public class DataLoader implements CommandLineRunner {
     private final EmployeeRepository employeeRepository;
     private final OrganizationRepository organizationRepository;
     private final AwardsCache awardsCache;
+    private final ActivityRepository activityRepository;
+    private MessageBroker messageBroker;
 
-    public DataLoader(EmployeeRepository employeeRepository, OrganizationRepository organizationRepository, AwardsCache awardsCache) {
+    public DataLoader(EmployeeRepository employeeRepository, OrganizationRepository organizationRepository, AwardsCache awardsCache, ActivityRepository activityRepository, MessageBroker messageBroker) {
         this.awardsCache = awardsCache;
         this.employeeRepository = employeeRepository;
         this.organizationRepository = organizationRepository;
+        this.activityRepository = activityRepository;
+        this.messageBroker = messageBroker;
     }
 
     @Override
@@ -32,7 +39,9 @@ public class DataLoader implements CommandLineRunner {
             Organization organizationPikashu = new Organization("Pikashu");
             organizationRepository.save(organizationPikashu);
 
-            employeeRepository.save(new Employee("John", "Doe", organizationPikashu));
+            Employee employee = new Employee("John", "Doe", organizationPikashu);
+            employee.setDundieAwards(2);
+            employeeRepository.save(employee);
             employeeRepository.save(new Employee("Jane", "Smith", organizationPikashu));
             employeeRepository.save(new Employee("Creed", "Braton", organizationPikashu));
 
@@ -49,5 +58,17 @@ public class DataLoader implements CommandLineRunner {
                 .mapToInt(employee -> Objects.requireNonNullElse(employee.getDundieAwards(), 0))
                 .sum();
         this.awardsCache.setTotalAwards(totalAwards);
+
+        if (activityRepository.count() == 0) {
+            activityRepository.save(new Activity(LocalDateTime.now(), "event 1"));
+            activityRepository.save(new Activity(LocalDateTime.now(), "event 2"));
+            activityRepository.save(new Activity(LocalDateTime.now(), "event 3"));
+        }
+
+        if (messageBroker.getMessages().isEmpty()) {
+            messageBroker.sendMessage(new Activity(LocalDateTime.now(), "event 1"));
+            messageBroker.sendMessage(new Activity(LocalDateTime.now(), "event 2"));
+            messageBroker.sendMessage(new Activity(LocalDateTime.now(), "event 3"));
+        }
     }
 }

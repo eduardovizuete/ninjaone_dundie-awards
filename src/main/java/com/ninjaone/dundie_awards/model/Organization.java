@@ -8,7 +8,7 @@ public class Organization {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   @Column(name = "name")
   private String name;
@@ -18,15 +18,14 @@ public class Organization {
   }
 
   public Organization(String name) {
-    super();
     this.name = name;
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

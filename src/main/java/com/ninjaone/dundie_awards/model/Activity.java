@@ -9,7 +9,7 @@ public class Activity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "occured_at")
     private LocalDateTime occuredAt;
@@ -22,9 +22,16 @@ public class Activity {
     }
 
     public Activity(LocalDateTime localDateTime, String event) {
-        super();
         this.occuredAt = localDateTime;
         this.event = event;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDateTime getOccuredAt() {
