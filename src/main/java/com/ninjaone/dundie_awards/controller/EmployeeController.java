@@ -2,9 +2,9 @@ package com.ninjaone.dundie_awards.controller;
 
 import com.ninjaone.dundie_awards.AwardsCache;
 import com.ninjaone.dundie_awards.MessageBroker;
-import com.ninjaone.dundie_awards.model.Employee;
+import com.ninjaone.dundie_awards.dto.EmployeeDTO;
 import com.ninjaone.dundie_awards.repository.ActivityRepository;
-import com.ninjaone.dundie_awards.repository.EmployeeRepository;
+import com.ninjaone.dundie_awards.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ import java.util.Optional;
 public class EmployeeController {
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private EmployeeService employeeService;
 
     @Autowired
     private ActivityRepository activityRepository;
@@ -35,23 +35,23 @@ public class EmployeeController {
     // get all employees
     @GetMapping("/employees")
     @ResponseBody
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeDTO> getAllEmployees() {
+        return employeeService.getAllEmployees();
     }
 
     // create employee rest api
     @PostMapping("/employees")
     @ResponseBody
-    public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeRepository.save(employee);
+    public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        return employeeService.createEmployee(employeeDTO);
     }
 
     // get employee by id rest api
     @GetMapping("/employees/{id}")
     @ResponseBody
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
-        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        return optionalEmployee
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id) {
+        Optional<EmployeeDTO> employeeDTO = employeeService.getEmployeeById(id);
+        return employeeDTO
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -59,33 +59,25 @@ public class EmployeeController {
     // update employee rest api
     @PutMapping("/employees/{id}")
     @ResponseBody
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails) {
-        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        if (!optionalEmployee.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Employee employee = optionalEmployee.get();
-        employee.setFirstName(employeeDetails.getFirstName());
-        employee.setLastName(employeeDetails.getLastName());
-
-        Employee updatedEmployee = employeeRepository.save(employee);
-        return ResponseEntity.ok(updatedEmployee);
+    public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDetails) {
+        Optional<EmployeeDTO> employeeDTO = employeeService.updateEmployee(id, employeeDetails);
+        return employeeDTO
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // delete employee rest api
     @DeleteMapping("/employees/{id}")
     @ResponseBody
     public ResponseEntity<Map<String, Boolean>> deleteEmployee(@PathVariable Long id) {
-        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        if (!optionalEmployee.isPresent()) {
+        Optional<EmployeeDTO> optionalEmployee = employeeService.deleteEmployee(id);
+        if (optionalEmployee.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            Map<String, Boolean> response = new HashMap<>();
+            response.put("deleted", Boolean.TRUE);
+            return ResponseEntity.ok(response);
         }
 
-        Employee employee = optionalEmployee.get();
-        employeeRepository.delete(employee);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        return ResponseEntity.ok(response);
     }
 }
