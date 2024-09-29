@@ -10,14 +10,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriTemplate;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Controller
-@RequestMapping()
+@RequestMapping("/api/v1")
 public class EmployeeController {
 
     @Autowired
@@ -35,15 +38,18 @@ public class EmployeeController {
     // get all employees
     @GetMapping("/employees")
     @ResponseBody
-    public List<EmployeeDTO> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
+        return ResponseEntity.ok(employeeService.getAllEmployees());
     }
 
     // create employee rest api
     @PostMapping("/employees")
     @ResponseBody
-    public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        return employeeService.createEmployee(employeeDTO);
+    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        EmployeeDTO createdEmployee = employeeService.createEmployee(employeeDTO);
+        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
+        URI uriLocation = new UriTemplate(builder.toUriString() + "/{id}").expand(createdEmployee.getId());
+        return ResponseEntity.created(uriLocation).body(createdEmployee);
     }
 
     // get employee by id rest api
@@ -78,6 +84,6 @@ public class EmployeeController {
             response.put("deleted", Boolean.TRUE);
             return ResponseEntity.ok(response);
         }
-
     }
+
 }
