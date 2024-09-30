@@ -1,13 +1,27 @@
 package com.ninjaone.dundie_awards.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 
+@Schema(
+        description = "ActivityDTO Model information"
+)
 public class ActivityDTO {
 
+    @Schema(
+            description = "Activity Id"
+    )
     private Long id;
 
+    @Schema(
+            description = "Activity occured at"
+    )
     private LocalDateTime occuredAt;
 
+    @Schema(
+            description = "Activity event"
+    )
     private String event;
 
     public ActivityDTO() {

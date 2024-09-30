@@ -1,15 +1,35 @@
 package com.ninjaone.dundie_awards.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(
+        description = "EmployeeDTO Model information"
+)
 public class EmployeeDTO {
 
+    @Schema(
+            description = "Employee Id"
+    )
     private Long id;
 
+    @Schema(
+            description = "Employee First Name"
+    )
     private String firstName;
 
+    @Schema(
+            description = "Employee Last Name"
+    )
     private String lastName;
 
+    @Schema(
+            description = "Employee dundie Awards"
+    )
     private Integer dundieAwards;
 
+    @Schema(
+            description = "Employee organization"
+    )
     private OrganizationDTO organization;
 
     public EmployeeDTO() {
