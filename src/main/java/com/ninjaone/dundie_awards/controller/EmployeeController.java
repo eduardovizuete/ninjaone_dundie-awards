@@ -56,34 +56,26 @@ public class EmployeeController {
     @GetMapping("/employees/{id}")
     @ResponseBody
     public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id) {
-        Optional<EmployeeDTO> employeeDTO = employeeService.getEmployeeById(id);
-        return employeeDTO
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        EmployeeDTO employeeDTO = employeeService.getEmployeeById(id);
+        return ResponseEntity.ok(employeeDTO);
     }
 
     // update employee rest api
     @PutMapping("/employees/{id}")
     @ResponseBody
     public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDetails) {
-        Optional<EmployeeDTO> employeeDTO = employeeService.updateEmployee(id, employeeDetails);
-        return employeeDTO
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        EmployeeDTO employeeDTO = employeeService.updateEmployee(id, employeeDetails);
+        return ResponseEntity.ok(employeeDTO);
     }
 
     // delete employee rest api
     @DeleteMapping("/employees/{id}")
     @ResponseBody
     public ResponseEntity<Map<String, Boolean>> deleteEmployee(@PathVariable Long id) {
-        Optional<EmployeeDTO> optionalEmployee = employeeService.deleteEmployee(id);
-        if (optionalEmployee.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            Map<String, Boolean> response = new HashMap<>();
-            response.put("deleted", Boolean.TRUE);
-            return ResponseEntity.ok(response);
-        }
+        employeeService.deleteEmployee(id);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", Boolean.TRUE);
+        return ResponseEntity.ok(response);
     }
 
 }
