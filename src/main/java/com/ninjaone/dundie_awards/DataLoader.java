@@ -21,7 +21,8 @@ public class DataLoader implements CommandLineRunner {
     private final ActivityRepository activityRepository;
     private MessageBroker messageBroker;
 
-    public DataLoader(EmployeeRepository employeeRepository, OrganizationRepository organizationRepository, AwardsCache awardsCache, ActivityRepository activityRepository, MessageBroker messageBroker) {
+    public DataLoader(EmployeeRepository employeeRepository, OrganizationRepository organizationRepository,
+                      AwardsCache awardsCache, ActivityRepository activityRepository, MessageBroker messageBroker) {
         this.awardsCache = awardsCache;
         this.employeeRepository = employeeRepository;
         this.organizationRepository = organizationRepository;
