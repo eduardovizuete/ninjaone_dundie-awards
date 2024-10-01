@@ -10,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -54,11 +53,6 @@ public class DataLoader implements CommandLineRunner {
             employeeRepository.save(new Employee("Jim", "Halpert", organizationSquanchy));
             employeeRepository.save(new Employee("Pam", "Beesley", organizationSquanchy));
         }
-
-        int totalAwards = employeeRepository.findAll().stream()
-                .mapToInt(employee -> Objects.requireNonNullElse(employee.getDundieAwards(), 0))
-                .sum();
-        this.awardsCache.setTotalAwards(totalAwards);
 
         if (activityRepository.count() == 0) {
             activityRepository.save(new Activity(LocalDateTime.now(), "event 1"));

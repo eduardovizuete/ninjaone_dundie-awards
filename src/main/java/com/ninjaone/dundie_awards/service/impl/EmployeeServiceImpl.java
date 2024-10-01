@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -59,14 +58,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         );
         employee.setFirstName(dto.getFirstName());
         employee.setLastName(dto.getLastName());
-        employee.setDundieAwards(dto.getDundieAwards());
 
-        Organization org = organizationRepository.findById(dto.getOrganization().getId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Organization", "id", dto.getOrganization().getId())
-                );
+        if (dto.getDundieAwards() != null) {
+            employee.setDundieAwards(dto.getDundieAwards());
+        }
 
-        employee.setOrganization(organizationMapper.toOrganization(dto.getOrganization()));
+        if (dto.getOrganization() != null && dto.getOrganization().getId() != null) {
+            Organization org = organizationRepository.findById(dto.getOrganization().getId())
+                    .orElseThrow(
+                            () -> new ResourceNotFoundException("Organization", "id", dto.getOrganization().getId())
+                    );
+
+            employee.setOrganization(organizationMapper.toOrganization(dto.getOrganization()));
+        }
 
         Employee updatedEmployee = employeeRepository.save(employee);
         return employeeMapper.toEmployeeDTO(updatedEmployee);
