@@ -111,7 +111,7 @@ class DundieAwardsApplicationTests {
     @Test
     public void deleteEmployeeAPI() throws Exception {
         mvc.perform(MockMvcRequestBuilders
-                        .delete("/api/v1/employees/1")
+                        .delete("/api/v1/employees/7")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

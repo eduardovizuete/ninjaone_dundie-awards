@@ -1,6 +1,7 @@
 package com.ninjaone.dundie_awards.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 
 @Schema(
         description = "EmployeeDTO Model information"
@@ -15,11 +16,13 @@ public class EmployeeDTO {
     @Schema(
             description = "Employee First Name"
     )
+    @NotEmpty(message = "Employee first name should not be null or empty")
     private String firstName;
 
     @Schema(
             description = "Employee Last Name"
     )
+    @NotEmpty(message = "User last name should not be null or empty")
     private String lastName;
 
     @Schema(

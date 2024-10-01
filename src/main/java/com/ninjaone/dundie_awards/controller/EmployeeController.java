@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -67,7 +68,7 @@ public class EmployeeController {
     )
     @PostMapping("/employees")
     @ResponseBody
-    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody @Valid EmployeeDTO employeeDTO) {
         EmployeeDTO createdEmployee = employeeService.createEmployee(employeeDTO);
         ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
         URI uriLocation = new UriTemplate(builder.toUriString() + "/{id}").expand(createdEmployee.getId());
@@ -75,7 +76,7 @@ public class EmployeeController {
     }
 
     // get employee by id rest api
-    @Operation(
+    @Operation(// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
             summary = "Get employee by id REST API",
             description = "Get employee by id REST API is used to get a single employee from the database"
     )
@@ -100,7 +101,7 @@ public class EmployeeController {
     )
     @PutMapping("/employees/{id}")
     @ResponseBody
-    public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDetails) {
+    public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody @Valid EmployeeDTO employeeDetails) {
         EmployeeDTO employeeDTO = employeeService.updateEmployee(id, employeeDetails);
         return ResponseEntity.ok(employeeDTO);
     }
